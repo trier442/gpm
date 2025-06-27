@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개포중 내신대비 사이트</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .tab {
+            cursor: pointer;
+            padding: 0.75rem 1.5rem;
+            color: #4B5563;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .tab:hover {
+            background-color: #e5e7eb;
+            color: #111827;
+        }
+        .tab.active {
+            color: #4338ca;
+            border-bottom-color: #4338ca;
+            font-weight: 700;
+        }
+        .question-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+        .prose-box {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.95em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .option-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .option-label:hover {
+            background-color: #f3f4f6;
+        }
+        input[type="radio"]:checked + .option-label {
+            background-color: #e0e7ff;
+            border-color: #4338ca;
+            color: #4338ca;
+            font-weight: 600;
+        }
+        input[type="radio"] {
+            display: none;
+        }
+        .correct {
+            background-color: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+        }
+        .incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+        #submission-status {
+            display: none;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        #submission-status.success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        #submission-status.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">개포중 내신대비 사이트</h1>
+        </header>
+
+        <nav class="mb-8 bg-white rounded-lg shadow-md">
+            <div id="tab-container" class="flex border-b border-gray-200 overflow-x-auto">
+                <!-- Tabs will be inserted here by JS -->
+            </div>
+        </nav>
+
+        <main id="content-area">
+            <!-- Test content will be loaded here -->
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 여기에 구글 앱 스크립트 배포 후 생성된 URL을 입력하세요.
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz15gpj0HcEi5ypZMBjjkzuL5kRAjk-BviFOs9IeSDIi-7euoR-37CCIIL3DApuERZa/exec'; 
+
+            const examData = {
+                test1: {
+                    title: '실전 테스트 1',
+                    questions: [
+                        { work: '발표', type: '내용 이해', question: "발표의 과정 중 '발표 내용 구성하기' 단계에서 해야 할 일로 적절하지 않은 것은?", options: ["도입-전개-정리 단계에서 발표할 내용 구성하기", "발표할 때 활용할 매체 자료 선정하기", "발표 주제와 관련 있는 정보 선별하기", "발표 내용의 순서와 제한 시간 고려하기", "핵심 정보만 간추려서 구성하기"], answer: 2, explanation: "'발표 주제와 관련 있는 정보 선별하기'는 '발표 내용 선정하기' 단계에서 하는 활동입니다. '발표 내용 구성하기' 단계에서는 이미 선정된 내용을 바탕으로 개요를 작성합니다." },
+                        { work: '발표', type: '매체 자료 활용', question: "발표에서 도표나 그래프와 같은 시각 자료를 활용했을 때 얻을 수 있는 효과로 가장 적절한 것은?", options: ["발표자의 목소리를 더 분명하게 전달한다.", "복잡한 내용을 한눈에 정리하여 보여 준다.", "발표의 배경음악으로 활용하여 분위기를 조성한다.", "발표자의 감정을 직접적으로 전달한다.", "실시간으로 움직이는 현상을 보여 준다."], answer: 1, explanation: "도표나 그래프는 복잡한 수치나 관계를 시각적으로 정리하여 청중이 한눈에 내용을 파악하고 이해하는 데 도움을 줍니다." },
+                        { work: '한글 창제', type: '창제 원리', question: "한글 자음의 기본자 'ㄱ, ㄴ, ㅁ, ㅅ, ㅇ'을 만든 원리는 무엇인가?", options: ["상형의 원리", "가획의 원리", "병서의 원리", "합성의 원리", "연서의 원리"], answer: 0, explanation: "자음 기본자 'ㄱ, ㄴ, ㅁ, ㅅ, ㅇ'은 소리를 낼 때의 발음 기관(혀, 입술, 이, 목구멍)의 모양을 본떠 만들었으므로 '상형(象形)의 원리'가 적용되었습니다." },
+                        { work: '한글 창제', type: '가획 원리', question: "자음 'ㅋ'을 만든 원리에 대한 설명으로 옳은 것은?", options: ["'ㄱ'을 두 번 나란히 썼다.", "'ㅇ'에 획을 더했다.", "'ㄱ'에 획을 더했다.", "'ㄷ'에 획을 더했다.", "목구멍 모양을 본떴다."], answer: 2, explanation: "'ㅋ'은 기본자인 'ㄱ'보다 소리의 세기가 거세지기 때문에, 'ㄱ'에 획을 더하여 만드는 '가획(加劃)의 원리'에 따라 만들어졌습니다." },
+                        { work: '문학 (귀뚜라미)', type: '화자 파악', question: "시 <귀뚜라미>의 화자는 누구인가?", options: ["매미", "어린 풀숲", "시인", "귀뚜라미", "독자"], answer: 3, explanation: "이 시는 '내 울음 아직은 노래 아니다'라고 말하는 '나'가 화자로 등장하며, 시의 내용으로 보아 이 '나'는 '귀뚜라미'임을 알 수 있습니다. 시인이 귀뚜라미를 의인화하여 화자로 설정한 것입니다." },
+                        { work: '문학 (귀뚜라미)', type: '시어의 의미', passage: "높은 가지를 흔드는 매미 소리에 묻혀 / 내 울음 아직은 노래 아니다.", question: "이 시에서 '매미'와 '귀뚜라미(나)'의 관계에 대한 설명으로 가장 적절한 것은?", options: ["서로 돕는 협력적 관계", "서로를 그리워하는 관계", "힘의 차이가 드러나는 대조적 관계", "아무 관련이 없는 무관한 관계", "서로 닮아가는 유사한 관계"], answer: 2, explanation: "'매미'는 '높은 가지'에서 큰 소리로 울어 모두가 주목하지만, '귀뚜라미'는 그 소리에 묻혀 울음이 노래가 되지 못하는 존재입니다. 이처럼 둘은 대조적인 상황에 놓여 있습니다." },
+                        { work: '문학 (동백꽃)', type: '서술자 파악', question: "소설 <동백꽃>의 서술자는 누구이며, 어떤 시점에 해당하는가?", options: ["점순이, 1인칭 주인공 시점", "나, 1인칭 주인공 시점", "작가, 3인칭 관찰자 시점", "점순이, 1인칭 관찰자 시점", "나, 3인칭 전지적 시점"], answer: 1, explanation: "이 소설은 주인공인 '나'가 자신의 이야기를 직접 서술하는 '1인칭 주인공 시점'으로 되어 있습니다." },
+                        { work: '문학 (동백꽃)', type: '소재의 의미', question: "점순이가 '나'에게 구운 감자를 건넨 행동에 담긴 가장 주된 의도는 무엇인가?", options: ["자신의 집이 더 잘산다는 것을 과시하기 위해", "배고픈 '나'를 동정해서", "'나'에 대한 자신의 관심과 호감을 표현하기 위해", "어머니의 심부름을 하기 위해", "남들이 보기에 착한 아이로 보이고 싶어서"], answer: 2, explanation: "점순이가 '나'에게 감자를 건넨 것은 '나'와 친해지고 싶은 마음과 자신의 호감을 표현하는 순박한 방식입니다. 하지만 '나'는 이를 눈치채지 못합니다." },
+                        { work: '발표', type: '준언어적 표현', question: "발표할 때 목소리의 크기, 높낮이, 빠르기, 어조 등과 같은 표현 요소를 무엇이라고 하는가?", options: ["언어적 표현", "비언어적 표현", "준언어적 표현", "매체 자료", "시각 자료"], answer: 2, explanation: "준언어적 표현은 언어적 표현에 실려 나오는 음성적 효과로, 목소리의 크기, 빠르기, 어조 등을 통해 의미를 보조하거나 강조하는 역할을 합니다." },
+                        { work: '한글 창제', type: '합성의 원리', question: "모음 'ㅗ'와 'ㅏ'를 만드는 데 공통적으로 적용된 원리는?", options: ["상형의 원리", "가획의 원리", "병서의 원리", "합성의 원리", "모아쓰기의 원리"], answer: 3, explanation: "모음 'ㅗ'는 '·'와 'ㅡ'를 결합하고, 'ㅏ'는 'ㅣ'와 '·'를 결합하여 만들었습니다. 이처럼 기본자를 서로 결합하여 새로운 글자를 만드는 원리를 '합성의 원리'라고 합니다." },
+                        { work: '문학 (귀뚜라미)', type: '상황 이해', question: "시 <귀뚜라미>의 화자가 처한 상황을 가장 잘 나타낸 시구는?", options: ["높은 가지를 흔드는 매미 소리", "지하도 콘크리트 벽 좁은 틈에서", "맑은 가을이", "어린 풀숲 위에 내려와", "누군가의 가슴에 실려 가는 노래"], answer: 1, explanation: "'지하도 콘크리트 벽 좁은 틈'은 화자인 귀뚜라미가 처한 어둡고, 차갑고, 힘든 현실적 공간을 상징적으로 보여줍니다." },
+                        { work: '문학 (동백꽃)', type: '인물 성격', question: "점순이의 호의를 거절하고, 닭싸움의 의도를 파악하지 못하는 '나'의 성격으로 가장 적절한 것은?", options: ["눈치 빠르고 영리함", "용감하고 적극적임", "어수룩하고 순진함", "냉정하고 이기적임", "비판적이고 소심함"], answer: 2, explanation: "'나'는 점순이의 애정 표현을 전혀 눈치채지 못하고, 점순이가 왜 자신을 괴롭히는지 이해하지 못하는 어수룩하고 순진한 소년입니다." },
+                        { work: '발표', type: '발표 평가', question: "다른 사람의 발표를 평가하는 기준으로 적절하지 않은 것은?", options: ["발표 내용이 주제와 관련 있는가?", "매체 자료를 효과적으로 활용했는가?", "발표자의 외모가 단정한가?", "목소리의 크기와 속도가 적절한가?", "청중과 눈을 맞추며 소통했는가?"], answer: 2, explanation: "발표를 평가할 때는 내용의 적절성, 자료 활용, 태도 등을 중심으로 평가해야 하며, 발표자의 외모는 평가의 본질적인 기준이 아닙니다." },
+                        { work: '한글 창제', type: '한글의 특성', question: "한글은 자음자와 모음자를 합쳐 하나의 음절 단위로 모아쓴다. 이러한 한글의 특성으로 인해 얻는 효과는?", options: ["글자 수가 매우 많아진다.", "글자를 배우기가 매우 어렵다.", "컴퓨터로 입력하기가 불편하다.", "하나의 글자가 여러 소리로 발음된다.", "글을 읽을 때 의미를 파악하기 쉽다."], answer: 4, explanation: "음절 단위로 모아쓰면 초성, 중성, 종성을 한눈에 파악할 수 있어 의미를 빠르고 쉽게 이해할 수 있습니다." },
+                        { work: '문학 (귀뚜라미)', type: '화자의 소망', question: "시 <귀뚜라미>에서 화자가 궁극적으로 바라는 것은 무엇인가?", options: ["매미처럼 높은 가지 위에서 사는 것", "차가운 지하도를 벗어나는 것", "자신의 울음이 누군가에게 감동을 주는 노래가 되는 것", "맑은 가을이 빨리 오는 것", "자신을 괴롭히는 존재들이 사라지는 것"], answer: 2, explanation: "화자는 '내 울음도 / 누군가의 가슴에 실려 가는 노래일 수 있을까'라고 말하며, 자신의 존재가 타인에게 의미 있고 감동을 주는 존재가 되기를 소망하고 있습니다." },
+                        { work: '문학 (동백꽃)', type: '갈등의 원인', question: "소설 <동백꽃>에서 '나'와 점순이 사이의 갈등이 시작된 직접적인 계기가 된 사건은?", options: ["닭싸움", "감자 사건", "울타리 엮기", "호드기 불기", "동백꽃밭 사건"], answer: 1, explanation: "점순이가 '나'에게 호의의 표시로 감자를 주었으나 '나'가 이를 거절하면서 점순이의 자존심이 상했고, 이로 인해 둘 사이의 갈등이 본격적으로 시작되었습니다." },
+                        { work: '발표', type: '매체 자료', question: "발표에서 동영상 자료를 활용하는 것이 가장 효과적인 경우는?", options: ["복잡한 통계 수치를 보여줄 때", "발표의 핵심 내용을 요약하여 제시할 때", "대상의 실제 움직임이나 변화 과정을 보여줄 때", "두 가지 개념을 비교하여 설명할 때", "발표 장소의 약도를 안내할 때"], answer: 2, explanation: "동영상은 시간의 흐름에 따른 대상의 움직임이나 변화 과정을 생생하게 보여줄 수 있어 청중의 이해를 돕고 흥미를 유발하는 데 매우 효과적입니다." },
+                        { work: '한글 창제', type: '창제 정신', question: "세종대왕이 한글(훈민정음)을 창제한 가장 근본적인 이유는 무엇인가?", options: ["나라의 힘을 과시하기 위해", "학자들의 연구를 돕기 위해", "글자를 모르는 백성들을 불쌍히 여겨서", "중국과의 교류를 원활하게 하기 위해", "아름다운 문자를 만들기 위해"], answer: 2, explanation: "세종대왕은 우리말에 맞는 글자가 없어 한자를 빌려 쓰느라 어려움을 겪는 백성들을 위해, 누구나 쉽게 배우고 쓸 수 있는 새로운 문자를 만들었습니다. 이는 백성을 사랑하는 애민 정신의 발로입니다." },
+                        { work: '문학 (귀뚜라미)', type: '표현법', question: "시 <귀뚜라미>에서 화자인 '귀뚜라미'가 사람처럼 생각하고 말하는 것으로 표현한 방식은?", options: ["직유법", "은유법", "의인법", "반어법", "역설법"], answer: 2, explanation: "사람이 아닌 대상을 사람인 것처럼 표현하는 방법을 '의인법'이라고 합니다. 이 시는 귀뚜라미를 '나'라는 화자로 설정하여 시 전체에 의인법을 사용하고 있습니다." },
+                        { work: '문학 (동백꽃)', type: '해학성', question: "소설 <동백꽃>에서 독자가 웃음을 느끼게 되는 가장 주된 이유는?", options: ["점순이의 행동이 매우 웃겨서", "등장인물들이 사투리를 재미있게 사용해서", "점순이의 마음을 독자는 알지만 서술자인 '나'만 몰라서", "'나'의 아버지가 매우 엄격해서", "닭들이 싸우는 모습이 익살스러워서"], answer: 2, explanation: "독자는 점순이의 행동이 '나'에 대한 애정 표현임을 알지만, 정작 서술자인 '나'는 이를 전혀 눈치채지 못하고 엉뚱하게 반응합니다. 이 서술자와 독자 사이의 정보 격차에서 오는 상황적 아이러니가 웃음(해학성)을 유발합니다." },
+                        { work: '발표', type: '발표 계획', question: "발표를 계획하는 단계에서 가장 먼저 고려해야 할 사항은?", options: ["발표 시간과 장소", "활용할 매체 자료", "예상 청중과 발표 목적", "발표문의 세부 내용", "발표 시 입을 옷"], answer: 2, explanation: "성공적인 발표를 위해서는 누구를 대상으로(예상 청중), 무엇을 위해(발표 목적) 발표하는지를 가장 먼저 명확히 해야 합니다. 이를 바탕으로 주제와 내용을 구체화해야 합니다." },
+                        { work: '한글 창제', type: '병서 원리', question: "'ㄲ', 'ㄸ', 'ㅃ'과 같이 이미 만들어진 글자를 가로로 나란히 써서 새로운 글자를 만드는 원리는?", options: ["상형의 원리", "가획의 원리", "병서의 원리", "합성의 원리", "연서의 원리"], answer: 2, explanation: "병서(竝書)는 '나란히 쓴다'는 뜻으로, 'ㄱ', 'ㄷ', 'ㅂ' 등을 나란히 써서 된소리인 'ㄲ', 'ㄸ', 'ㅃ' 등을 표기하는 원리입니다." },
+                        { work: '문학 (귀뚜라미)', type: '시어의 대조', question: "시 <귀뚜라미>에서 화자의 처지와 대조되는 공간을 나타내는 시어는?", options: ["차가운 바닥", "지하도", "높은 가지", "좁은 틈", "이 땅 밑"], answer: 2, explanation: "'높은 가지'는 매미가 우는 공간으로, '지하도', '차가운 바닥' 등 화자가 처한 낮고 어두운 공간과 선명한 대조를 이루어 화자의 처지를 부각합니다." },
+                        { work: '문학 (동백꽃)', type: '갈등 해소', question: "소설 <동백꽃>에서 '나'와 점순이의 갈등이 해소되는 결정적 계기가 된 소재는?", options: ["감자", "닭싸움", "호드기", "동백꽃", "지게막대기"], answer: 3, explanation: "홧김에 '나'가 점순이네 닭을 죽인 사건 이후, 점순이가 이를 문제 삼지 않고 오히려 '나'를 위로하면서 둘의 갈등이 극적으로 해소되고 화해하게 됩니다. 이후 둘은 함께 동백꽃 속으로 쓰러지며 풋풋한 사랑의 감정을 나눕니다." },
+                        { work: '한글 창제', type: '정보화 시대의 한글', question: "정보화 시대에 한글이 다른 문자에 비해 가지는 장점으로 가장 적절한 것은?", options: ["글자 모양이 예술적으로 아름답다.", "역사가 매우 오래되었다.", "컴퓨터나 휴대 전화로 입력하기에 과학적이고 편리하다.", "세계 모든 언어의 발음을 표기할 수 있다.", "글자 수가 많아 다양한 표현이 가능하다."], answer: 2, explanation: "한글은 자음과 모음의 조합 원리가 체계적이고, 글자 수가 적어 정보 기기에서 매우 빠르고 효율적으로 입력할 수 있다는 장점이 있습니다." }
+                    ]
+                },
+                test2: {
+                    title: '실전 테스트 2',
+                    questions: [
+                        { work: '문학 (동백꽃)', type: '서술 방식', question: "소설 <동백꽃>은 '오늘'의 닭싸움 이야기로 시작했다가 '나흘 전'의 감자 사건으로 돌아간다. 이러한 서술 방식을 무엇이라고 하는가?", options: ["순행적 구성", "역순행적 구성", "액자식 구성", "병렬적 구성", "옴니버스 구성"], answer: 1, explanation: "시간의 흐름을 따르지 않고 현재에서 과거로 거슬러 올라가 사건을 서술하는 방식을 '역순행적 구성'이라고 합니다. 이 소설은 현재의 갈등(닭싸움)을 보여준 뒤 그 원인이 되는 과거 사건(감자)을 설명하여 독자의 이해를 돕습니다." },
+                        { work: '문학 (귀뚜라미)', type: '계절적 배경', question: "시 <귀뚜라미>에서 화자가 소망을 이루기를 기다리는 계절은 언제인가?", options: ["봄", "여름", "가을", "겨울", "계절과 상관없음"], answer: 2, explanation: "화자는 '지금은 매미 떼가 하늘을 찌르는 시절(여름)'이 지나고 '맑은 가을'이 오면 자신의 울음도 노래가 될 수 있을 것이라고 소망하고 있습니다." },
+                        { work: '한글 창제', type: '모음 기본자', question: "한글 모음의 기본자 '·, ㅡ, ㅣ'가 각각 상징하는 것으로 바르게 짝지어진 것은?", options: ["해, 달, 별", "하늘, 땅, 사람", "나무, 풀, 꽃", "산, 강, 바다", "봄, 여름, 가을"], answer: 1, explanation: "모음 기본자는 천지인(天地人) 사상을 바탕으로 만들어졌습니다. '·'는 둥근 하늘, 'ㅡ'는 평평한 땅, 'ㅣ'는 서 있는 사람의 모양을 본떴습니다." },
+                        { work: '발표', type: '발표의 단계', question: "발표의 '도입' 부분에서 할 역할로 가장 적절하지 않은 것은?", options: ["청중의 관심과 흥미를 유발한다.", "발표의 배경과 주제를 소개한다.", "발표할 내용의 순서를 안내한다.", "발표의 핵심 내용을 요약하고 강조한다.", "자신을 간단히 소개하고 인사한다."], answer: 3, explanation: "발표의 핵심 내용을 요약하고 강조하는 것은 발표의 마지막 단계인 '정리' 부분에서 하는 역할입니다. '도입'에서는 앞으로 할 이야기에 대한 안내를 합니다." },
+                        { work: '문학 (동백꽃)', type: '인물의 태도', passage: "나는 고개도 돌리려 하지 않고 일하던 손으로 그 감자를 도로 어깨 너머로 쑥 밀어 버렸다.", question: "감자를 거절하는 '나'의 태도에서 알 수 있는 성격은?", options: ["사려 깊고 친절함", "활발하고 적극적임", "무뚝뚝하고 자존심이 강함", "소심하고 겁이 많음", "장난스럽고 쾌활함"], answer: 2, explanation: "점순이의 호의를 고맙게 받지 않고, '느 집엔 이거 없지?'라는 말에 자존심이 상해 퉁명스럽게 거절하는 모습에서 '나'의 무뚝뚝한 성격을 엿볼 수 있습니다." },
+                        { work: '문학 (귀뚜라미)', type: '감정 이입', question: "시 <귀뚜라미>를 읽고, 화자의 처지에 공감하며 위로를 받을 수 있는 사람으로 가장 적절한 것은?", options: ["모든 일이 순조롭게 잘 풀리는 사람", "화려한 성공으로 많은 사람의 주목을 받는 사람", "어려운 환경 속에서도 꿈을 잃지 않고 노력하는 사람", "세상사에 관심 없이 혼자 지내기를 좋아하는 사람", "자신의 잘못을 반성하지 않는 사람"], answer: 2, explanation: "이 시의 화자는 힘든 상황에서도 좌절하지 않고 자신의 소리가 누군가에게 의미 있기를 바라는 소망을 가지고 있습니다. 따라서 비슷한 처지에 있는 사람들에게 공감과 위로를 줄 수 있습니다." },
+                        { work: '한글 창제', type: '창제 원리', question: "한글은 기본자를 먼저 만들고, 여기에 획을 더하거나 글자들을 결합하여 체계적으로 글자를 확장해 나갔다. 이러한 특성과 가장 관련 깊은 말은?", options: ["독창적이고 주체적이다.", "자연 발생적이다.", "비논리적이고 복잡하다.", "과학적이고 체계적이다.", "예술적이고 아름답다."], answer: 3, explanation: "최소한의 기본자를 만든 뒤, 일정한 원리(가획, 합성)에 따라 나머지 글자들을 만들어 낸 것은 한글이 매우 논리적이고 과학적인 체계를 갖추고 있음을 보여줍니다." },
+                        { work: '발표', type: '자료의 신뢰성', question: "발표를 위해 인터넷에서 자료를 찾을 때, 정보의 신뢰도를 높이기 위한 방법으로 가장 적절한 것은?", options: ["가장 먼저 검색되는 정보를 사용한다.", "개인 블로그나 SNS의 글을 그대로 인용한다.", "여러 정보를 비교하고, 정부 기관이나 언론사 등 공신력 있는 출처의 자료를 활용한다.", "가장 자극적이고 흥미로운 제목의 글을 선택한다.", "날짜와 상관없이 가장 내용이 많은 자료를 사용한다."], answer: 2, explanation: "인터넷에는 부정확하거나 편향된 정보가 많으므로, 반드시 여러 자료를 비교 검토하고, 출처가 분명하고 신뢰할 수 있는 기관에서 제공하는 정보를 활용해야 합니다." },
+                        { work: '문학 (동백꽃)', type: '소재의 역할', question: "소설 <동백꽃>에서 '닭싸움'이 하는 역할로 적절하지 않은 것은?", options: ["'나'에 대한 점순이의 복수심을 드러낸다.", "'나'의 관심을 끌기 위한 수단이다.", "'나'와 점순이의 갈등을 심화시킨다.", "두 사람의 사회적 계층 차이를 상징한다.", "'나'와 점순이가 화해하는 직접적인 계기가 된다."], answer: 4, explanation: "'닭싸움'은 감자 사건 이후 '나'에 대한 점순이의 복합적인 감정을 표현하고 갈등을 심화시키는 중요한 역할을 하지만, 화해의 직접적 계기는 '나'가 점순이네 닭을 죽인 사건입니다. 사회적 계층 차이는 '마름'과 '소작인'이라는 설정에서 직접 드러납니다." },
+                        { work: '문학 (귀뚜라미)', type: '시어의 의미', passage: "내 울음 아직은 노래 아니다.", question: "화자가 자신의 소리를 '노래'가 아닌 '울음'이라고 표현한 이유는?", options: ["노래 부르는 법을 배우지 못해서", "목소리가 좋지 않아서", "아직 자신의 소리가 누군가에게 감동을 주지 못한다고 생각해서", "매미 소리를 흉내 내고 싶어서", "슬픈 감정에 빠져 있어서"], answer: 2, explanation: "화자에게 '노래'는 누군가의 마음에 가 닿아 감동을 주는 가치 있는 소리입니다. 아직 자신의 소리는 그에 미치지 못하는, 고통 속에서 터져 나오는 '울음'일 뿐이라고 겸손하게 인식하고 있는 것입니다." },
+                        { work: '한글 창제', type: '제자 원리 종합', question: "한글의 제자 원리에 대한 설명으로 옳지 않은 것은?", options: ["자음 기본자는 발음 기관의 모양을 본떴다.", "모음 기본자는 하늘, 땅, 사람의 모양을 본떴다.", "기본자에 획을 더하여 소리의 세기가 센 글자를 만들었다.", "기본자들을 결합하여 새로운 모음자를 만들었다.", "모든 글자는 하나의 원리로만 만들어졌다."], answer: 4, explanation: "한글은 상형, 가획, 병서, 합성 등 여러 원리가 유기적으로 결합하여 만들어진 체계적인 문자입니다. 예를 들어 'ㅍ'은 기본자 'ㅁ'(상형)에 획을 더해(가획) 만들어졌습니다." },
+                        { work: '발표', type: '발표 태도', question: "성공적인 발표를 위한 태도로 가장 바람직한 것은?", options: ["준비한 원고를 보며 정확하게 읽는다.", "한 사람만 정해서 시선을 고정한다.", "자신감 없고 작은 목소리로 말한다.", "청중과 골고루 눈을 맞추며 자연스럽게 말한다.", "최대한 어려운 전문 용어를 많이 사용한다."], answer: 3, explanation: "성공적인 발표는 청중과의 소통이 중요합니다. 청중과 골고루 눈을 맞추고, 자신감 있는 목소리와 자연스러운 표정, 몸짓을 통해 내용을 전달해야 효과적입니다." },
+                        { work: '문학 (동백꽃)', type: '인물의 심리', passage: "이걸 가만히 내려다보자니 내 대강이가 터져서 피가 흐르는 것같이 두 눈에서 불이 번쩍 난다.", question: "자신의 닭이 쪼이는 것을 본 '나'의 심정으로 가장 적절한 것은?", options: ["슬픔", "두려움", "억울함", "분노", "부끄러움"], answer: 3, explanation: "'내 대강이가 터져서 피가 흐르는 것같이', '두 눈에서 불이 번쩍 난다'는 표현은 점순이에 대한 '나'의 격렬한 분노를 생생하게 보여주는 부분입니다." },
+                        { work: '문학 (귀뚜라미)', type: '화자의 태도', question: "어렵고 힘든 상황에 처한 화자의 태도로 가장 적절한 것은?", options: ["현실을 비관하며 모든 것을 포기하고 있다.", "현실을 외면하고 과거의 좋았던 시절만 그리워한다.", "현실에 순응하며 아무런 노력도 하지 않는다.", "현실의 고통을 견디며 미래에 대한 희망을 잃지 않는다.", "자신을 힘들게 하는 대상을 원망하고 저주한다."], answer: 3, explanation: "화자는 '숨 막힐 듯'한 상황에서도 '나 여기 살아 있다'고 외치며, 언젠가 자신의 울음이 노래가 될 것이라는 희망을 품고 있습니다. 이는 현실의 어려움에 굴하지 않는 긍정적이고 미래 지향적인 태도를 보여줍니다." },
+                        { work: '한글 창제', type: '한글의 우수성', question: "한글의 우수성에 대한 설명으로 적절하지 않은 것은?", options: ["만든 사람과 만든 시기가 분명하게 알려져 있다.", "배우고 사용하기가 매우 쉽다.", "적은 수의 글자로 많은 소리를 표현할 수 있다.", "글자를 만드는 원리가 과학적이고 체계적이다.", "세계에서 가장 많은 사람이 사용하는 문자이다."], answer: 4, explanation: "한글은 매우 우수한 문자이지만, 사용 인구수 측면에서는 영어, 중국어, 스페인어 등에 비해 적습니다. 나머지 항목들은 모두 한글의 우수성을 나타내는 특징입니다." },
+                        { work: '발표', type: '자료 제시', question: "발표 중 '이 도표를 보시지요.'라고 말하며 자료를 제시하는 가장 주된 이유는?", options: ["발표 시간을 채우기 위해", "발표자가 잠시 쉬기 위해", "청중의 시선을 집중시키고 이해를 돕기 위해", "자료가 많다는 것을 과시하기 위해", "청중을 시험하기 위해"], answer: 2, explanation: "매체 자료를 제시하는 것은 청중의 시선을 끌어 발표에 집중하게 하고, 말로만 설명하기 어려운 내용을 시각적으로 보여줌으로써 이해를 돕는 효과적인 전략입니다." },
+                        { work: '문학 (동백꽃)', type: '소재의 역할', passage: "알싸한 그리고 향긋한 그 내음새에 나는 땅이 꺼지는 듯이 온 정신이 그만 아찔하였다.", question: "이 장면에서 '동백꽃'의 역할로 가장 적절한 것은?", options: ["'나'와 점순이의 갈등을 최고조로 이끈다.", "'나'의 가난한 처지를 상징적으로 보여준다.", "두 사람의 화해와 사랑의 감정을 위한 낭만적 분위기를 조성한다.", "다가올 비극적인 사건을 암시한다.", "점순이의 강한 생활력을 나타낸다."], answer: 2, explanation: "점순이와 '나'의 갈등이 해소된 후, 두 사람이 함께 동백꽃 속으로 파묻히는 이 장면에서 '동백꽃'은 풋풋한 사랑의 감정을 아름답고 서정적으로 만드는 배경 역할을 합니다. '알싸한 그리고 향긋한' 향기는 '나'가 느끼는 아찔한 감정을 감각적으로 표현합니다." },
+                        { work: '문학 (귀뚜라미)', type: '시상 전개', question: "이 시의 내용 전개에 대한 설명으로 가장 적절한 것은?", options: ["시간의 흐름에 따라 화자의 심리가 변화한다.", "여러 공간을 이동하며 다양한 풍경을 묘사한다.", "과거와 현재를 대비하며 과거를 그리워한다.", "문제점을 제시하고 그에 대한 해결책을 주장한다.", "점점 더 강한 어조로 대상을 비판한다."], answer: 0, explanation: "이 시는 '지금(여름)'의 절망적인 상황에서 '가을'이라는 미래의 희망을 노래하는 구조로, 시간의 흐름(여름→가을)에 따라 화자의 소망과 기대감이 드러나는 방식으로 시상이 전개됩니다." },
+                        { work: '한글 창제', type: '상형 원리', question: "다음 중 자음자를 만들 때 본뜬 '발음 기관의 모양'이 아닌 것은?", options: ["혀뿌리가 목구멍을 막는 모양", "혀끝이 윗잇몸에 닿는 모양", "입술 모양", "코 모양", "목구멍 모양"], answer: 3, explanation: "자음 기본자는 혀(ㄱ, ㄴ), 입술(ㅁ), 이(ㅅ), 목구멍(ㅇ)의 모양을 본떠 만들었으며, 코의 모양을 본뜬 글자는 없습니다." },
+                        { work: '발표', type: '발표의 목적', question: "지아네 모둠이 '청소년의 스트레스와 관리 방법'을 주제로 발표한 가장 주된 목적은?", options: ["자신들의 지식을 자랑하기 위해", "친구들에게 스트레스 관리 방법에 대한 정보를 제공하기 위해", "선생님께 칭찬을 받기 위해", "스트레스의 위험성을 경고하고 겁을 주기 위해", "재미있는 이야기로 친구들을 즐겁게 하기 위해"], answer: 1, explanation: "발표의 목적은 청중에게 특정 정보를 전달하거나, 설득을 통해 생각이나 행동의 변화를 이끌어내는 것입니다. 지아네 모둠은 친구들이 스트레스 관리 방법을 알고 건강하게 생활하기를 바라는 '정보 전달'의 목적을 가지고 있습니다." },
+                        { work: '문학 (동백꽃)', type: '인물 관계', question: "소설 <동백꽃>에서 '나'의 집과 점순이네 집의 관계는?", options: ["대등한 이웃 관계", "서로 경쟁하는 라이벌 관계", "소작인과 마름의 관계", "친척 관계", "원수 관계"], answer: 2, explanation: "점순이네는 마름이고 '나'의 집은 그 집 땅을 빌려 농사짓는 소작인입니다. 이러한 사회적 신분 차이 때문에 '나'는 점순이에게 함부로 대하지 못하고 갈등 상황에서 소극적인 태도를 보입니다." },
+                        { work: '문학 (귀뚜라미)', type: '시어의 의미', question: "시 <귀뚜라미>에서 '타전 소리'가 의미하는 바로 가장 적절한 것은?", options: ["가을을 알리는 소리", "매미를 쫓아내는 소리", "자신이 살아있음을 알리는 간절한 신호", "사랑을 고백하는 소리", "전쟁을 알리는 경고음"], answer: 2, explanation: "'타전 소리'는 전보를 보내는 소리로, 화자는 자신의 울음소리를 멀리까지 자신의 존재를 알리고 싶은 간절한 신호에 비유하고 있습니다." },
+                        { work: '한글 창제', type: '창제 원리', question: "다음 중 한글을 만든 원리가 다른 하나는?", options: ["ㄱ → ㅋ", "ㄴ → ㄷ", "ㅁ → ㅂ", "ㅅ → ㅈ", "ㄱ → ㄲ"], answer: 4, explanation: "①, ②, ③, ④는 기본자에 획을 더해 만든 '가획'의 원리가 적용된 것이고, ⑤는 같은 글자를 나란히 쓴 '병서'의 원리가 적용된 것입니다." },
+                        { work: '발표', type: '발표 마무리', question: "발표의 '정리' 단계에서 해야 할 활동으로 가장 적절한 것은?", options: ["새로운 주제를 던져 청중의 호기심을 자극한다.", "발표 내용을 요약하고, 핵심 메시지를 다시 한번 강조한다.", "자세한 통계 자료를 길게 설명한다.", "청중에게 갑작스러운 질문을 던져 당황하게 한다.", "아무 말 없이 인사하고 끝낸다."], answer: 1, explanation: "정리 단계에서는 발표의 핵심 내용을 간략하게 요약하여 청중이 내용을 잘 기억할 수 있도록 돕고, 당부의 말이나 인상 깊은 말로 마무리하여 여운을 남기는 것이 좋습니다." },
+                        { work: '문학 (동백꽃)', type: '서술자의 역할', question: "소설 <동백꽃>에서 서술자를 어수룩한 '나'로 설정하여 얻는 효과는?", options: ["사건의 진실을 객관적으로 전달한다.", "점순이의 복잡한 내면 심리를 상세히 보여준다.", "독자가 '나'의 순진한 시선을 따라가며 웃음을 느끼게 한다.", "긴박하고 비극적인 분위기를 조성한다.", "작품의 주제를 직접적으로 설명해준다."], answer: 2, explanation: "서술자인 '나'가 점순이의 의도를 전혀 파악하지 못하기 때문에, 독자는 '나'의 어수룩한 생각과 행동을 보며 재미와 웃음(해학성)을 느끼게 됩니다. 이는 이 소설의 가장 큰 특징 중 하나입니다." }
+                    ]
+                },
+                test3: {
+                    title: '실전 테스트 3',
+                    questions: [
+                        { work: '문학 (귀뚜라미)', type: '화자의 정서', question: "시 <귀뚜라미>의 화자가 '가을'을 기다리는 이유로 가장 적절한 것은?", options: ["더위가 싫어서", "맛있는 열매를 먹기 위해", "매미 소리가 그치고 자신의 소리가 잘 들릴 것이기 때문에", "겨울잠을 준비해야 해서", "아름다운 단풍을 보고 싶어서"], answer: 2, explanation: "화자에게 여름은 자신의 소리가 '매미 소리에 묻히는' 고통의 시간입니다. 따라서 매미 소리가 그치는 '가을'이 오면 비로소 자신의 울음이 노래가 되어 누군가에게 전달될 수 있을 것이라고 기대하며 기다립니다." },
+                        { work: '문학 (동백꽃)', type: '인물의 성격', passage: "\"염려 마서유. 갈 때 되면 어련히 갈라구.......\"", question: "동네 어른의 말에 점순이가 위와 같이 대답한 것으로 보아 알 수 있는 점순이의 성격은?", options: ["수줍음이 많고 내성적이다.", "매우 반항적이고 공격적이다.", "슬픔에 잠겨 비관적이다.", "넉살이 좋고 당돌한 면이 있다.", "남의 눈치를 많이 본다."], answer: 3, explanation: "어른의 짓궂은 농담에 부끄러워하지 않고 '어련히 갈라구요'라고 받아치는 모습에서 점순이의 당차고 넉살 좋은 성격을 엿볼 수 있습니다." },
+                        { work: '발표', type: '발표 내용 선정', question: "발표할 내용을 선정할 때 고려할 점으로 가장 거리가 먼 것은?", options: ["발표 주제와의 관련성", "예상 청중의 관심사와 지식 수준", "정보 출처의 신뢰성", "발표자의 개인적인 취향", "발표 목적과의 부합성"], answer: 3, explanation: "발표는 청중을 위한 소통 행위이므로, 발표자의 개인적인 취향보다는 주제, 청중, 목적을 중심으로 내용을 객관적으로 선정해야 합니다." },
+                        { work: '한글 창제', type: '한글의 특성', question: "한글 'ㅏ'는 항상 [아]로 소리 나지만, 영어 'a'는 단어에 따라 [아], [에이], [어] 등 여러 소리로 난다. 이와 관련된 한글의 특성은?", options: ["글자 모양이 독창적이다.", "음절 단위로 모아쓴다.", "하나의 글자가 하나의 소릿값을 가진다.", "모든 소리를 적을 수 있다.", "자연의 모양을 본떴다."], answer: 2, explanation: "한글은 하나의 글자가 하나의 소리에 대응하는 것을 원칙으로 하는 음소문자로, 소리 나는 대로 읽고 쓰기가 매우 편리합니다. 이는 다른 여러 문자와 구별되는 한글의 중요한 특성입니다." },
+                        { work: '문학 (귀뚜라미)', type: '시구의 의미', passage: "누군가의 가슴에 실려 가는 노래일 수 있을까.", question: "화자가 바라는 '노래'의 의미로 가장 적절한 것은?", options: ["단순히 듣기 좋은 소리", "돈을 많이 벌 수 있는 수단", "타인에게 위로와 감동을 주는 가치 있는 존재", "자신의 힘을 과시하는 외침", "슬픔을 잊기 위한 유희"], answer: 2, explanation: "화자는 자신의 울음이 단순한 소리를 넘어, 누군가의 마음에 가 닿아 위로와 감동을 주는 의미 있고 가치 있는 '노래'가 되기를 소망하고 있습니다." },
+                        { work: '문학 (동백꽃)', type: '갈등의 양상', question: "소설 <동백꽃>에 나타나는 주된 갈등의 양상은?", options: ["인물과 사회의 갈등", "인물의 내적 갈등", "인물과 인물의 갈등", "인물과 운명의 갈등", "인간과 자연의 갈등"], answer: 2, explanation: "이 소설은 '나'에 대한 호감을 표현하는 '점순이'와 이를 전혀 눈치채지 못하는 '나' 사이에서 벌어지는 사건들을 중심으로 하므로, 인물과 인물 간의 갈등이 주된 갈등 양상입니다." },
+                        { work: '발표', type: '매체 자료의 종류', question: "다음 중 성격이 다른 매체 자료 하나는?", options: ["사진", "도표", "그림", "동영상", "실물"], answer: 3, explanation: "사진, 도표, 그림, 실물은 시각 자료에 해당하지만, 동영상은 시각 정보와 청각 정보가 결합된 시청각 자료입니다." },
+                        { work: '한글 창제', type: '창제 원리', question: "훈민정음 창제 당시, 자음과 모음을 만든 기본 원리를 바르게 짝지은 것은?", options: ["자음: 가획, 모음: 합성", "자음: 상형, 모음: 상형", "자음: 병서, 모음: 가획", "자음: 합성, 모음: 상형", "자음: 상형, 모음: 가획"], answer: 1, explanation: "자음과 모음의 기본자는 모두 '모양을 본뜬다'는 '상형'의 원리를 바탕으로 만들어졌습니다. 다만, 자음은 발음 기관의 모양을, 모음은 자연(하늘, 땅, 사람)의 모양을 본떴다는 차이가 있습니다." },
+                        { work: '문학 (귀뚜라미)', type: '표현 기법', question: "시 <귀뚜라미>에서 '귀뚜르르 뚜르르'와 같이 소리를 흉내 낸 말을 사용하여 생동감을 주는 표현법은?", options: ["의성법", "의태법", "은유법", "직유법", "대구법"], answer: 0, explanation: "의성법은 소리를 흉내 내는 말(의성어)을 사용하여 대상을 생생하게 표현하는 방법입니다. '귀뚜르르 뚜르르'는 귀뚜라미의 울음소리를 흉내 낸 의성어입니다." },
+                        { work: '문학 (동백꽃)', type: '반어적 표현', question: "점순이가 '나'의 닭을 괴롭히는 상황에서 '나'가 '고년의 목쟁이를 돌려놓고 싶다'고 생각하는 것은 점순이에 대한 반감을 드러낸다. 이처럼 속마음과 반대로 표현하는 것을 무엇이라 하는가?", options: ["직설적 표현", "우회적 표현", "반어적 표현", "역설적 표현", "풍자적 표현"], answer: 2, explanation: "반어법은 실제 표현하려는 의도와는 반대되는 말로 표현하여 의미를 강조하는 수사법입니다. '나'는 점순이에 대한 분노와 미움을 느끼면서도, 점순이의 행동에 담긴 진짜 의미를 파악하지 못하고 있습니다." },
+                        { work: '발표', type: '발표 준비', question: "발표 준비 과정에서 '발표 내용 선정하기' 다음에 해야 할 일은?", options: ["주제 정하기", "예상 청중 분석하기", "자료 조사하기", "발표 개요 작성하기", "발표 연습하기"], answer: 3, explanation: "발표 준비는 '계획하기(주제, 목적, 청중 분석) → 내용 선정하기(자료 조사 및 선별) → 내용 구성하기(개요 작성) → 발표하기(연습 및 실제 발표) → 평가하기'의 순서로 이루어집니다. 따라서 내용 선정 후에는 그 내용을 체계적으로 구성하는 개요 작성을 해야 합니다." },
+                        { work: '한글 창제', type: '창제 배경', question: "한글 창제 이전, 우리 조상들이 우리말을 표기하기 위해 빌려 썼던 문자는?", options: ["로마자", "가나", "산스크리트어", "한자", "몽골 문자"], answer: 3, explanation: "한글 창제 이전에는 우리 고유의 문자가 없어서 중국의 문자인 한자를 빌려 우리말을 표기했습니다. 하지만 한자는 우리말의 체계와 달라 표기에 많은 어려움이 있었습니다." },
+                        { work: '문학 (귀뚜라미)', type: '화자의 태도', passage: "그러나 나 여기 살아 있다", question: "위 시구에 드러난 화자의 태도로 가장 적절한 것은?", options: ["절망과 체념", "강한 생명력과 존재 의지", "과거에 대한 후회", "타인에 대한 원망", "현실에 대한 만족감"], answer: 1, explanation: "'숨 막힐 듯'한 힘든 상황임에도 불구하고 '그러나 나 여기 살아 있다'고 말하는 부분에서, 어려운 현실에 굴하지 않으려는 화자의 강한 생명력과 자신의 존재를 알리려는 의지를 엿볼 수 있습니다." },
+                        { work: '문학 (동백꽃)', type: '시대적 배경', question: "소설 <동백꽃>에서 '마름'과 '소작인'이라는 단어를 통해 알 수 있는 이 작품의 시대적 배경은?", options: ["삼국 시대", "고려 시대", "조선 전기", "1930년대 일제강점기", "1970년대 산업화 시기"], answer: 3, explanation: "지주를 대신하여 소작농을 관리하던 '마름'이라는 존재는 1930년대 일제강점기 농촌 사회의 특징적인 모습 중 하나입니다. 이를 통해 작품의 시대적 배경을 짐작할 수 있습니다." },
+                        { work: '발표', type: '정보 활용 윤리', question: "발표 자료를 만들 때, 다른 책이나 인터넷의 내용을 인용했다면 반드시 해야 할 일은?", options: ["내용을 조금 바꾸어 자신이 쓴 것처럼 꾸민다.", "인용한 부분의 글자 크기를 작게 만든다.", "정확한 출처를 밝힌다.", "인용한 사실을 아무에게도 말하지 않는다.", "최대한 많이 인용하여 내용을 풍부하게 만든다."], answer: 2, explanation: "다른 사람의 저작물을 사용할 때는 반드시 그 출처를 정확하게 밝혀야 합니다. 이는 저작자의 권리를 존중하고 정보 활용 윤리를 지키는 기본적인 태도입니다." },
+                        { work: '한글 창제', type: '모음 조화', question: "한글에서 'ㅏ, ㅗ'와 같은 양성 모음은 양성 모음끼리, 'ㅓ, ㅜ'와 같은 음성 모음은 음성 모음끼리 어울려 사용되는 경향을 무엇이라고 하는가?", options: ["두음 법칙", "구개음화", "자음 동화", "모음 조화", "움라우트"], answer: 3, explanation: "모음 조화는 양성 모음은 양성 모음끼리, 음성 모음은 음성 모음끼리 어울리는 우리말의 특징적인 음운 현상입니다. '퐁당퐁당', '알록달록'과 같은 단어에서 잘 나타납니다." },
+                        { work: '문학 (귀뚜라미)', type: '화자의 목소리', question: "시 <귀뚜라미> 전체를 지배하는 화자의 어조로 가장 적절한 것은?", options: ["격정적이고 분노에 찬 어조", "밝고 경쾌한 어조", "조용히 소망을 이야기하는 독백적 어조", "대상을 날카롭게 비판하는 어조", "객관적 사실을 전달하는 건조한 어조"], answer: 2, explanation: "화자는 자신의 어려운 처지와 간절한 소망을 '~까'와 같은 의문형 어미를 사용하여 조용히 읊조리듯 이야기하고 있습니다. 이는 독백적인 어조에 가깝습니다." },
+                        { work: '문학 (동백꽃)', type: '인물의 대화', passage: "\"이 바보 녀석아!\" / \"얘! 너 배냇병신이지?\"", question: "점순이가 '나'에게 위와 같이 말하는 가장 큰 이유는?", options: ["'나'를 진심으로 미워해서", "원래부터 성격이 나빠서", "자신의 마음을 전혀 알아주지 못하는 '나'가 답답해서", "'나'의 아버지를 모욕하기 위해", "싸움을 걸어 '나'를 때려주기 위해"], answer: 2, explanation: "점순이는 '나'를 좋아해서 여러 방식으로 관심을 표현하지만, '나'는 전혀 눈치채지 못하고 엉뚱하게 반응합니다. 이러한 '나'의 모습에 답답함과 야속함을 느껴 반어적으로 '바보'라고 말하는 것입니다." },
+                        { work: '발표', type: '청중 분석', question: "발표자가 발표 내용의 수준과 범위를 정하기 위해 '예상 청중 분석'을 할 때, 고려할 요소로 거리가 먼 것은?", options: ["청중의 나이와 성별", "청중의 발표 주제에 대한 사전 지식", "청중의 관심사와 요구", "청중의 발표자와의 개인적인 친분", "청중의 수와 발표 장소의 분위기"], answer: 3, explanation: "청중 분석은 효과적인 내용 전달을 위해 청중의 특성을 파악하는 것입니다. 발표자와의 개인적인 친분은 발표 내용의 수준과 범위를 결정하는 객관적인 기준이 되기 어렵습니다." },
+                        { work: '한글 창제', type: '제자 원리 응용', question: "휴대 전화 자판에서 'ㄱ'을 누른 후 '획 추가' 버튼을 눌러 'ㅋ'을 만드는 것은 한글의 어떤 창제 원리를 응용한 것인가?", options: ["상형", "가획", "병서", "합성", "연서"], answer: 1, explanation: "기본자인 'ㄱ'에 획을 추가하여 소리가 더 거센 'ㅋ'을 만드는 '가획'의 원리를 휴대 전화 자판 설계에 그대로 응용한 사례입니다." },
+                        { work: '문학 (귀뚜라미)', type: '시적 허용', question: "시인이 시에서 문법에 어긋나거나 표준어와 다른 표현을 의도적으로 사용하는 것을 무엇이라고 하는가?", options: ["시적 허용", "시적 자아", "시적 긴장", "시적 거리", "시적 아이러니"], answer: 0, explanation: "시적 허용은 시인이 운율을 살리거나 특정 효과를 위해 의도적으로 문법이나 맞춤법에서 벗어난 표현을 사용하는 것을 말합니다." },
+                        { work: '문학 (동백꽃)', type: '해학성', question: "소설 <동백꽃>의 '나'가 수탉에게 고추장을 먹이면 싸움을 잘할 것이라고 믿고 실행하는 장면에서 독자가 느끼는 주된 감정은?", options: ["긴장감", "슬픔", "공포", "웃음(해학)", "분노"], answer: 3, explanation: "닭싸움에 이기기 위해 진지하게 엉뚱한 행동을 하는 '나'의 순진하고 어수룩한 모습은 독자에게 안타까움보다는 건강한 웃음을 유발합니다. 이를 '해학성'이라고 합니다." },
+                        { work: '발표', type: '발표의 정의', question: "여러 사람 앞에서 자신의 생각이나 의견, 또는 어떤 사실에 대해 공식적으로 말하는 것을 무엇이라고 하는가?", options: ["대화", "토론", "토의", "발표", "연설"], answer: 3, explanation: "발표는 정해진 청중을 대상으로 특정한 주제에 대해 체계적으로 정보를 전달하거나 설득하는 것을 목적으로 하는 공식적인 말하기입니다." },
+                        { work: '한글 창제', type: '훈민정음', question: "세종대왕이 창제한 우리 글의 본래 이름은 무엇인가?", options: ["한글", "언문", "정음", "훈민정음", "가갸글"], answer: 3, explanation: "1443년 세종대왕이 창제하고 1446년에 반포한 우리 글의 본래 이름은 '백성을 가르치는 바른 소리'라는 뜻의 '훈민정음(訓民正音)'입니다. '한글'이라는 이름은 주시경 선생에 의해 20세기 초에 만들어졌습니다." },
+                        { work: '문학 (동백꽃)', type: '결말', question: "소설 <동백꽃>의 결말에 대한 설명으로 가장 적절한 것은?", options: ["'나'와 점순이는 끝내 화해하지 못하고 헤어진다.", "'나'는 점순이네의 횡포를 견디지 못하고 다른 마을로 이사 간다.", "'나'와 점순이는 갈등을 해소하고 풋풋한 사랑의 감정을 나눈다.", "점순이는 자신의 잘못을 뉘우치고 '나'에게 사과한다.", "'나'는 닭을 죽인 일로 점순이네 집에서 쫓겨난다."], answer: 2, explanation: "이 소설은 '나'가 점순이네 닭을 죽인 사건을 계기로 두 사람의 갈등이 해소되고, 함께 동백꽃밭에 쓰러지며 풋풋한 사랑을 확인하는 희극적이고 낭만적인 결말로 마무리됩니다." }
+                    ]
+                }
+            };
+            
+            const tabContainer = document.getElementById('tab-container');
+            const contentArea = document.getElementById('content-area');
+
+            function renderTest(testId, test) {
+                let questionsHtml = '';
+                test.questions.forEach((q, index) => {
+                    const optionsHtml = q.options.map((opt, i) => `
+                        <div class="mt-2">
+                            <input type="radio" name="question${index}" id="q${index}o${i}" value="${i}">
+                            <label for="q${index}o${i}" class="option-label">
+                                <span class="font-mono mr-2">${i + 1}</span> ${opt}
+                            </label>
+                        </div>
+                    `).join('');
+                    questionsHtml += `
+                        <div class="question-card" data-work="${q.work}" data-type="${q.type}" data-answer="${q.answer}">
+                            <div class="mb-4">
+                                <span class="inline-block bg-indigo-100 text-indigo-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">${q.work}</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">${q.type}</span>
+                            </div>
+                            <h3 class="font-semibold text-lg mb-2 text-gray-800">${index + 1}. ${q.question}</h3>
+                            ${q.passage ? `<div class="prose-box">${q.passage}</div>` : ''}
+                            <div class="space-y-2">${optionsHtml}</div>
+                        </div>
+                    `;
+                });
+                
+                contentArea.innerHTML = `
+                    <div id="test-container">
+                        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                            <label for="student-name" class="block text-lg font-semibold text-gray-700 mb-2">이름을 입력하세요:</label>
+                            <input type="text" id="student-name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="이름">
+                        </div>
+                        ${questionsHtml}
+                        <div class="text-center mt-8">
+                            <button id="submit-btn" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-indigo-700 transition duration-300">제출하기</button>
+                        </div>
+                    </div>
+                    <div id="result-container" class="hidden"></div>
+                `;
+                
+                document.getElementById('submit-btn').addEventListener('click', () => handleSubmit(testId));
+            }
+
+            function renderResults(name, score, correctCount, questions, userAnswers, weakestWork, weakestType) {
+                let detailedResultsHtml = '<h3 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">상세 해설</h3>';
+                questions.forEach((q, index) => {
+                    const userAnswer = userAnswers[index];
+                    const isCorrect = userAnswer === q.answer;
+                    
+                    const optionsHtml = q.options.map((opt, i) => {
+                        let labelClass = "option-label";
+                        if(i === q.answer) {
+                            labelClass += " correct";
+                        } else if (i === userAnswer && !isCorrect) {
+                            labelClass += " incorrect";
+                        }
+                        
+                        return `<div class="mt-2"><div class="${labelClass}"><span class="font-mono mr-2">${i + 1}</span> ${opt}</div></div>`;
+                    }).join('');
+
+                    detailedResultsHtml += `
+                        <div class="question-card">
+                             <div class="mb-4">
+                                <span class="inline-block bg-indigo-100 text-indigo-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">${q.work}</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">${q.type}</span>
+                            </div>
+                            <h4 class="font-semibold text-lg mb-2">${index + 1}. ${isCorrect ? '<span class="text-green-600 font-bold">[정답]</span>' : '<span class="text-red-600 font-bold">[오답]</span>'} ${q.question}</h4>
+                            ${q.passage ? `<div class="prose-box">${q.passage}</div>` : ''}
+                            <div class="space-y-2">${optionsHtml}</div>
+                            <div class="mt-4 p-4 bg-gray-50 rounded-md">
+                                <p class="font-semibold text-gray-700">해설</p>
+                                <p class="text-gray-600 text-sm mt-1">${q.explanation}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                const resultContainer = document.getElementById('result-container');
+                resultContainer.innerHTML = `
+                    <div class="question-card text-center">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">시험 결과: ${name} 학생</h2>
+                        <p class="text-6xl font-bold text-indigo-600 my-6">${score}<span class="text-3xl text-gray-500">점</span></p>
+                        <p class="text-lg text-gray-700">${questions.length}문제 중 ${correctCount}문제 정답</p>
+                        <div id="submission-status"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                         <div class="question-card">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">취약점 분석</h3>
+                            <div class="space-y-3">
+                                <p class="text-gray-700"><strong>가장 많이 틀린 영역:</strong> <span class="font-semibold text-red-600">${weakestWork}</span></p>
+                                <p class="text-gray-700"><strong>가장 많이 틀린 유형:</strong> <span class="font-semibold text-red-600">${weakestType}</span></p>
+                            </div>
+                         </div>
+                         <div class="question-card">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">학습 가이드</h3>
+                            <p class="text-gray-700">'${weakestWork}' 영역의 기본 개념을 다시 한번 꼼꼼히 복습하고, '${weakestType}' 유형의 문제 풀이 전략을 보충하는 것이 좋겠습니다. 오답 노트를 작성하여 틀린 문제를 완벽하게 이해하는 것이 중요합니다.</p>
+                         </div>
+                    </div>
+
+                    <div class="mt-12">${detailedResultsHtml}</div>
+                `;
+                resultContainer.classList.remove('hidden');
+            }
+
+            async function sendDataToGoogleSheet(data) {
+                const statusDiv = document.getElementById('submission-status');
+                if (!SCRIPT_URL) {
+                    console.error("Google Apps Script URL이 설정되지 않았습니다.");
+                    if(statusDiv) {
+                        statusDiv.textContent = '결과 전송 URL이 설정되지 않았습니다. 관리자에게 문의하세요.';
+                        statusDiv.className = 'error';
+                        statusDiv.style.display = 'block';
+                    }
+                    return;
+                }
+
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // CORS 에러 방지를 위해 추가
+                        body: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    
+                    if(statusDiv) {
+                        statusDiv.textContent = '성공적으로 제출되었습니다!';
+                        statusDiv.className = 'success';
+                        statusDiv.style.display = 'block';
+                    }
+                } catch (error) {
+                     if(statusDiv) {
+                        statusDiv.textContent = '제출 중 오류가 발생했습니다. 다시 시도해주세요.';
+                        statusDiv.className = 'error';
+                        statusDiv.style.display = 'block';
+                    }
+                    console.error('Error:', error);
+                }
+            }
+            
+            function handleSubmit(testId) {
+                const studentName = document.getElementById('student-name').value.trim();
+                if (!studentName) {
+                    const nameInput = document.getElementById('student-name');
+                    nameInput.classList.add('border-red-500', 'focus:ring-red-500');
+                    nameInput.placeholder = "이름을 먼저 입력해주세요!";
+                    nameInput.focus();
+                    return;
+                }
+
+                const questions = examData[testId].questions;
+                const questionElements = document.querySelectorAll('.question-card');
+                let correctCount = 0;
+                const userAnswers = [];
+                const analysis = { byWork: {}, byType: {} };
+
+                questionElements.forEach((qEl, index) => {
+                    const selected = qEl.querySelector(`input[name="question${index}"]:checked`);
+                    const userAnswer = selected ? parseInt(selected.value) : -1;
+                    userAnswers.push(userAnswer);
+                    
+                    const correctAnswer = parseInt(qEl.dataset.answer);
+                    const work = qEl.dataset.work;
+                    const type = qEl.dataset.type;
+
+                    if (userAnswer === correctAnswer) {
+                        correctCount++;
+                    } else {
+                        analysis.byWork[work] = (analysis.byWork[work] || 0) + 1;
+                        analysis.byType[type] = (analysis.byType[type] || 0) + 1;
+                    }
+                });
+
+                const score = Math.round((correctCount / questions.length) * 100);
+                
+                const findWeakest = (data) => {
+                    let weakest = '없음';
+                    let maxErrors = 0;
+                    for (const key in data) {
+                        if (data[key] > maxErrors) {
+                            maxErrors = data[key];
+                            weakest = key;
+                        }
+                    }
+                    return weakest;
+                };
+
+                const weakestWork = findWeakest(analysis.byWork);
+                const weakestType = findWeakest(analysis.byType);
+
+                const resultData = {
+                    timestamp: new Date().toLocaleString("ko-KR"),
+                    studentName: studentName,
+                    testTitle: examData[testId].title,
+                    score: score,
+                    correctCount: correctCount,
+                    totalQuestions: questions.length,
+                    weakestWork: weakestWork,
+                    weakestType: weakestType,
+                };
+                
+                sendDataToGoogleSheet(resultData);
+
+                document.getElementById('test-container').classList.add('hidden');
+                renderResults(studentName, score, correctCount, questions, userAnswers, weakestWork, weakestType);
+            }
+
+            function switchTab(testId) {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                const currentTab = document.querySelector(`.tab[data-id="${testId}"]`);
+                if(currentTab) currentTab.classList.add('active');
+
+                contentArea.innerHTML = '';
+                const test = examData[testId];
+
+                if (test.questions && test.questions.length > 0) {
+                    renderTest(testId, test);
+                } else {
+                    contentArea.innerHTML = `
+                        <div class="question-card text-center py-20">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-4">${test.title}</h2>
+                            <p class="text-gray-600 text-lg">시험지가 준비 중입니다.</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // --- Initialization ---
+            const tests = Object.keys(examData);
+            tests.forEach((testId) => {
+                const tab = document.createElement('a');
+                tab.className = 'tab';
+                tab.textContent = examData[testId].title;
+                tab.dataset.id = testId;
+                tab.addEventListener('click', () => switchTab(testId));
+                tabContainer.appendChild(tab);
+            });
+            
+            // 초기 로드 시 첫 번째 탭 활성화
+            if (tests.length > 0) {
+                switchTab(tests[0]);
+            }
+        });
+    </script>
+</body>
+</html>
